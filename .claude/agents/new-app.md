@@ -61,8 +61,17 @@ The apex landing site lives in the `ardiejohnson-com` repo (`index.html`). Add a
 3. Confirm the two portfolio-wide requirements above are done (back-to-home button + homepage card).
 4. Commit. On a full machine with a fresh repo you can push to main to seed it; in a cloud session, open a PR (the preview flow) so Ardie can QA first.
 
-## Tell Ardie what's left (one-time, but phone-doable)
-- If the repo still needs creating and you couldn't: have Ardie tap "Use this template" on `app-template` (phone-friendly), then re-run you in the new repo.
-- Hosting: the app must be imported into Vercel once and its subdomain attached (Vercel's web dashboard works on a phone browser). After that, every change ships through preview -> promote like the rest of the portfolio.
+## Hosting + subdomain (how far you can take it depends on the device)
+The subdomain follows `[appname].ardiejohnson.com`. Always confirm the exact name with Ardie before wiring DNS — don't guess.
+
+**On Ardie's laptop (the `vercel` CLI is logged in and the GoDaddy key is present) you can do the whole thing:**
+1. Link + create the Vercel project: `npx vercel link --yes --project <name>` (from the repo), then deploy.
+2. Attach the subdomain to the project: `npx vercel domains add <name>.ardiejohnson.com <name>`.
+3. Add the DNS record automatically — **this is the step that used to be manual**:
+   `~/.godaddy/add-subdomain.sh <name>`  (creates an `A <name> → 76.76.21.21` record via the GoDaddy API).
+   - Creds live in `~/.godaddy/credentials` — **laptop-only, outside every git repo. Never print, commit, or move them.**
+   - Vercel then auto-issues HTTPS within a few minutes. Verify with `dig +short <name>.ardiejohnson.com` (expect `76.76.21.21`).
+
+**On a phone / web / cloud session (no CLI, no GoDaddy key):** you can't do hosting/DNS. Tell Ardie the one-time manual steps: import the repo into Vercel, attach the subdomain in the dashboard, and add the DNS record at GoDaddy. After that, every change ships through preview → promote like the rest of the portfolio.
 
 Keep instructions plain and short. End by telling Ardie the exact next click.

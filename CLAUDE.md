@@ -65,6 +65,7 @@ Apps often begin as a single HTML or JSX file from a chat. To bring one in:
 1. **Create the repo** — tap **"Use this template"** on `ardiejohnson/app-template` (github.com, works on phone) and name it (e.g. `moodboard`). The new repo is born with the agents + CLAUDE.md already inside. (On a laptop, the new-app agent can create the repo directly with `gh` instead.)
 2. **Open Claude Code** on the new repo and give the **new-app** agent your file — it detects HTML vs JSX, scaffolds the project, builds it, and adds the app to the table above.
 3. **Wire hosting once** — import the repo into Vercel, attach the subdomain, and turn on branch protection for `main` (Vercel's web dashboard is phone-friendly).
+   - **DNS is automated on the laptop.** The GoDaddy API is wired up, so from Ardie's laptop the subdomain's DNS record can be added with one command — `~/.godaddy/add-subdomain.sh <name>` (creates `A <name> → 76.76.21.21`; Vercel then issues HTTPS). Creds live in `~/.godaddy/credentials`, laptop-only and outside every git repo — never commit or move them. From a phone/web session this step is still manual in the GoDaddy dashboard.
 After that it's a normal portfolio app: preview -> review -> promote, from anywhere.
 
 `app-template` is a one-time setup (see make-template.sh) — the GitHub template that makes new apps portable.
