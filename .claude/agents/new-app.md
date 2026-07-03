@@ -23,10 +23,36 @@ JSX / React app:
 2. Drop Ardie's component into `src/` (e.g. `src/App.tsx`, or a named component imported by App).
 3. Run `npm install` and `npm run build` to confirm it compiles. Fix issues plainly.
 
+## Portfolio-wide requirements — EVERY app gets these two things
+These are non-negotiable defaults for any `[appname].ardiejohnson.com` app. Don't ship an app without them.
+
+**1. A "back to ardiejohnson.com" button in the upper-left corner.**
+Use the standard portfolio pill (copied from MoodCast) so every app looks consistent: white background `#FFFFFF`, 1px border `#E3E7EC`, dark ink `#1B2330`, `border-radius:999px`, `padding:5px 12px`, `font-size:12.5px`, `font-weight:700`, text `← ardiejohnson.com`, fixed to the upper-left.
+
+- JSX/React app: add `src/HomeButton.tsx` and render it before the main component in `App.tsx`:
+  ```tsx
+  export default function HomeButton() {
+    return (
+      <a href="https://ardiejohnson.com" aria-label="Back to ardiejohnson.com" className="home-button"
+        style={{ position:'fixed', top:12, left:12, zIndex:9999, display:'inline-flex', alignItems:'center',
+          gap:6, background:'#FFFFFF', border:'1px solid #E3E7EC', borderRadius:999, padding:'5px 12px',
+          fontSize:12.5, fontWeight:700, color:'#1B2330', textDecoration:'none', boxShadow:'0 2px 10px rgba(0,0,0,0.08)' }}>
+        ← ardiejohnson.com
+      </a>
+    )
+  }
+  ```
+  Add `@media print { .home-button { display:none !important; } }` to the global CSS.
+- STATIC HTML app: add the same as a fixed-position anchor near the top of `<body>` with equivalent inline styles.
+
+**2. A card on the ardiejohnson.com homepage.**
+The apex landing site lives in the `ardiejohnson-com` repo (`index.html`). Add a live card for the new app in the `.apps` grid, matching the existing `<a class="app-card live">` pattern (icon emoji, app name, one-line description, `<span class="dot"></span> Live`). If there's a "coming soon" placeholder that fits, replace it. This is a change to a *separate deployed repo*, so it goes through that repo's own preview → promote flow — flag it to Ardie as a second PR to review.
+
 ## Wire it into the system
 1. Make sure `.claude/agents/` and `CLAUDE.md` are present (they come for free if the repo was made from `app-template`; if not, copy them in).
 2. Add the new app to the repos table in CLAUDE.md (repo name + intended subdomain, e.g. `moodboard.ardiejohnson.com`).
-3. Commit. On a full machine with a fresh repo you can push to main to seed it; in a cloud session, open a PR (the preview flow) so Ardie can QA first.
+3. Confirm the two portfolio-wide requirements above are done (back-to-home button + homepage card).
+4. Commit. On a full machine with a fresh repo you can push to main to seed it; in a cloud session, open a PR (the preview flow) so Ardie can QA first.
 
 ## Tell Ardie what's left (one-time, but phone-doable)
 - If the repo still needs creating and you couldn't: have Ardie tap "Use this template" on `app-template` (phone-friendly), then re-run you in the new repo.
