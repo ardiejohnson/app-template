@@ -26,24 +26,31 @@ JSX / React app:
 ## Portfolio-wide requirements — EVERY app gets these two things
 These are non-negotiable defaults for any `[appname].ardiejohnson.com` app. Don't ship an app without them.
 
-**1. A "back to ardiejohnson.com" button in the upper-left corner.**
-Use the standard portfolio pill (copied from MoodCast) so every app looks consistent: white background `#FFFFFF`, 1px border `#E3E7EC`, dark ink `#1B2330`, `border-radius:999px`, `padding:5px 12px`, `font-size:12.5px`, `font-weight:700`, text `← ardiejohnson.com`, fixed to the upper-left.
+**1. A "back to ardiejohnson.com" button near the upper-left.**
+Use the standard portfolio pill (copied from MoodCast) so every app looks consistent: white background `#FFFFFF`, 1px border `#E3E7EC`, dark ink `#1B2330`, `border-radius:999px`, `padding:5px 12px`, `font-size:12.5px`, `font-weight:700`, text `← ardiejohnson.com`.
 
-- JSX/React app: add `src/HomeButton.tsx` and render it before the main component in `App.tsx`:
+**Placement matters:** render it *in normal flow at the very top of the page, above the app's own header* — NOT `position:fixed`. A fixed button overlaps any app that has its own top bar/title (learned the hard way on WealthLab). Give the top strip the same background color as the app so it blends in.
+
+- JSX/React app: add `src/HomeButton.tsx` (the pill, `display:inline-flex`, no positioning) and render it in a top strip before the main component in `App.tsx`:
   ```tsx
+  // HomeButton.tsx — just the pill
   export default function HomeButton() {
     return (
       <a href="https://ardiejohnson.com" aria-label="Back to ardiejohnson.com" className="home-button"
-        style={{ position:'fixed', top:12, left:12, zIndex:9999, display:'inline-flex', alignItems:'center',
-          gap:6, background:'#FFFFFF', border:'1px solid #E3E7EC', borderRadius:999, padding:'5px 12px',
-          fontSize:12.5, fontWeight:700, color:'#1B2330', textDecoration:'none', boxShadow:'0 2px 10px rgba(0,0,0,0.08)' }}>
+        style={{ display:'inline-flex', alignItems:'center', gap:6, background:'#FFFFFF', border:'1px solid #E3E7EC',
+          borderRadius:999, padding:'5px 12px', fontSize:12.5, fontWeight:700, color:'#1B2330', textDecoration:'none' }}>
         ← ardiejohnson.com
       </a>
     )
   }
+  // App.tsx — strip above the app (swap #f5f8fb for the app's own bg color)
+  <div className="home-strip" style={{ background:'#f5f8fb' }}>
+    <div style={{ maxWidth:1120, margin:'0 auto', padding:'14px 20px 0' }}><HomeButton /></div>
+  </div>
+  <TheApp />
   ```
-  Add `@media print { .home-button { display:none !important; } }` to the global CSS.
-- STATIC HTML app: add the same as a fixed-position anchor near the top of `<body>` with equivalent inline styles.
+  Add `@media print { .home-strip, .home-button { display:none !important; } }` to the global CSS.
+- STATIC HTML app: add the same pill as an anchor at the very top of `<body>`, above the app's header.
 
 **2. A card on the ardiejohnson.com homepage.**
 The apex landing site lives in the `ardiejohnson-com` repo (`index.html`). Add a live card for the new app in the `.apps` grid, matching the existing `<a class="app-card live">` pattern (icon emoji, app name, one-line description, `<span class="dot"></span> Live`). If there's a "coming soon" placeholder that fits, replace it. This is a change to a *separate deployed repo*, so it goes through that repo's own preview → promote flow — flag it to Ardie as a second PR to review.

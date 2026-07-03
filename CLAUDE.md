@@ -34,7 +34,7 @@ When in doubt about a subdomain, ask me rather than guessing — DNS is easy to 
 
 ## Every app ships with these (portfolio defaults)
 Non-negotiable for every `[appname].ardiejohnson.com` app — the **new-app** agent adds them automatically, and any new app should be checked for both before it goes live:
-1. **Back-to-home button, upper-left.** The standard MoodCast pill — white `#FFFFFF`, 1px border `#E3E7EC`, dark ink `#1B2330`, rounded-full, `← ardiejohnson.com`, fixed to the top-left corner. Keeps navigation consistent across the whole portfolio. (React: a `HomeButton` component; static: a fixed anchor. Hide it in print with `@media print`.)
+1. **Back-to-home button, upper-left.** The standard MoodCast pill — white `#FFFFFF`, 1px border `#E3E7EC`, dark ink `#1B2330`, rounded-full, `← ardiejohnson.com`. Place it in a strip at the very top of the page, *above* the app's own header — in normal flow, NOT `position:fixed` (a fixed button overlaps any app that has its own top bar). Keeps navigation consistent across the whole portfolio. (React: a `HomeButton` component; static: an anchor at the top of `<body>`. Hide it in print with `@media print`.)
 2. **A card on the apex homepage.** Add a live card for the app to the `ardiejohnson-com` repo's `index.html` (`.apps` grid). That's a separate deployed repo, so it ships through its own preview → promote flow.
 
 ## The agents
