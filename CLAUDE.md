@@ -1,18 +1,4 @@
 # ArdieWorks — Ardie Johnson's App Portfolio
-
-## STOP rules — read these first, every session
-
-1. **Never merge a PR or deploy to production without Ardie reviewing a preview first.**
-   The flow is: branch -> PR -> hand Ardie the Vercel preview URL -> he approves -> then merge.
-   This binds the main session, not just the `promote` agent. A `PreToolUse` hook enforces it.
-2. **If you bypass preview, say so in the same message and say why.**
-   The only good reasons are: Ardie explicitly said "ship it", or production is broken.
-   Bypassing is `PREVIEW_APPROVED=1 <command>` — deliberate and visible, never a habit.
-   An approval for one change is NOT standing approval for the next one.
-3. **Never push directly to `main`.** Always branch, PR, merge.
-4. **Never commit secrets.** Client apps use the anon/publishable key only.
-5. **Confirm before anything destructive** — dropped tables, deleted data, rewritten RLS.
-
 # (ArdieWorks = the agentic system that builds, previews, and ships these apps.)
 
 This file records the conventions for my personal app portfolio. Each app is its
@@ -40,11 +26,14 @@ One repo per deployed app. Repo names sometimes carry an `-app` suffix that the 
 | `legacy`            | legacy.ardiejohnson.com    | Family memoir archive; password-gated, Supabase + `archive` edge function |
 | `switch`            | switch.ardiejohnson.com    | Marketing site for a smart-glass product; quote form via Vercel `/api` + Resend |
 | `los-oviedo-garage` | **losoviedo.com** (own apex) | Bilingual (EN/ES) marketing site for a used car dealership + service garage |
+| `dashthing`         | **dashthing.com** (own apex, Porkbun) | dashThing command center (Dash · Eco · Op Tools); Supabase `dashthing-dev`; `www` 308-redirects to the apex. Renamed from `dashidoo` on 2026-10-07 |
 
 Note: `auction-app` is an older project, NOT deployed under this domain — ignore it.
-Note: `los-oviedo-garage` is the one app NOT on an `ardiejohnson.com` subdomain — it's
-a client-facing site, so it lives on its own domain, `losoviedo.com` (registered in the
-same GoDaddy account). This is deliberate; don't "fix" it back to a subdomain. The old
+Note: `los-oviedo-garage` and `dashthing` are the two apps NOT on an `ardiejohnson.com`
+subdomain. One is a client-facing site and the other a product with its own brand, so each
+lives on its own domain: `losoviedo.com` (registered in the same GoDaddy account) and
+`dashthing.com` (registered at Porkbun; nameservers point at Vercel). This is deliberate;
+don't "fix" them back to subdomains. The old
 `losoviedo.ardiejohnson.com` and `www.losoviedo.com` both 308-redirect to the apex via
 `redirects()` in `next.config.mjs` — keep those rules so shared links never die.
 When in doubt about a subdomain, ask me rather than guessing — DNS is easy to get wrong.
@@ -61,6 +50,33 @@ Non-negotiable for every `[appname].ardiejohnson.com` app — the **new-app** ag
 1. **Back-to-home button, upper-left.** The standard MoodCast pill — white `#FFFFFF`, 1px border `#E3E7EC`, dark ink `#1B2330`, rounded-full, `← ardiejohnson.com`. Place it in a strip at the very top of the page, *above* the app's own header — in normal flow, NOT `position:fixed` (a fixed button overlaps any app that has its own top bar). Keeps navigation consistent across the whole portfolio. (React: a `HomeButton` component; static: an anchor at the top of `<body>`. Hide it in print with `@media print`.)
 2. **A `DESIGN.md` at the repo root — the app's design point of view.** Who opens it, what they actually want, the one feeling, what it must NOT look like, and the one thing they must be able to do. The **app-design** skill writes it with me (five short questions) and every later UI change is judged against it. Without a stated point of view every app drifts toward the same default look — Inter on white with a blue button — which is exactly what this prevents.
 3. **A card on the apex homepage.** Add a live card for the app to the `ardiejohnson-com` repo's `index.html` (`.apps` grid). That's a separate deployed repo, so it ships through its own preview → promote flow.
+
+<!-- ardieworks:ownership -->
+## Who owns a repo's Claude config
+
+Everything under `.claude/` — agents, skills, hooks, and the `hooks` block of
+`settings.json` — is **owned by this repo (ArdieWorks HQ)**. Don't edit those
+inside an app repo; the next sync overwrites the change.
+
+The pipe runs one way:
+
+```
+ardieworks HQ  --sync-template Action-->  app-template  --sync-agents.sh-->  17 app repos
+```
+
+To change an agent, skill, or hook: edit it here, let the Action carry it to
+`app-template`, then run `sync-agents.sh`. A session working inside an app repo
+owns that repo's **application code**; `.claude/` travels down from HQ.
+
+Two escape hatches: put `ardieworks-sync: skip` in a file to pin it in one repo,
+and note that `sync-agents.sh` only ever merges the `hooks` key of
+`settings.json` and the marked block of `CLAUDE.md` — per-repo permissions and
+app-specific docs are never touched.
+
+Targets are **discovered, not hardcoded**: every non-archived `ardiejohnson`
+repo containing `.claude/agents/`, minus the exclude list. Two hand-maintained
+lists are what let the portfolio drift into three different states.
+<!-- /ardieworks:ownership -->
 
 ## The agents
 Canonical in the `ardieworks` repo under `plugins/ardieworks/agents/`; app repos carry a synced copy in `.claude/agents/`. Delegate to them by role:
